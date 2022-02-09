@@ -44,6 +44,7 @@ int method_1(double d){
     auto finish_time = get_current_time_fenced();
 
     auto total_time = finish_time - start_time;
+    //std::cout<<to_us(total_time)<<std::endl;
     full_execution_time += to_us(total_time);
 
     return (int)str.length();
@@ -82,18 +83,12 @@ void write_file(int amount, double average){
 
     if(!out.is_open()){
         std::cout<<"Error opening file (write_file)"<< std::endl;
-        exit(1);
+        exit(4);
     }
 
     out<<amount<<"\n"<<average<<std::endl;
 
     out.close();
-    // create new file + write there
-    /*std::ofstream outfile("test.txt");
-    outfile<<"hey you! you are soooo cutty^^"<<std::endl;
-    outfile.close();
-     */
-
 }
 
 void pre_method(int n, const std::vector<double>& data){
@@ -117,7 +112,7 @@ void pre_method(int n, const std::vector<double>& data){
             break;
         default:
             std::cout<<"No such method (pre_method)"<< std::endl;
-            break;
+            exit(3);
     }
     double average = (double)characters_amount/data_size;
     write_file(characters_amount, average);
@@ -130,7 +125,7 @@ std::vector<double> read_file(){//(const std::string& file){
 
     if(!in.is_open()){
         std::cout<<"Error opening file (read_file)"<< std::endl;
-        exit(1);
+        exit(4);
     }
 
     while(in>>d){
@@ -142,6 +137,10 @@ std::vector<double> read_file(){//(const std::string& file){
 int main(int argc, char* argv[]) {
 
     int n;
+    if(argc>4){
+        std::cout<<"Error: too many arguments."<< std::endl;
+        exit(2);
+    }
     if(argc>1){
         //std::cout<<argv[1]<<std::endl;
         //std::cout<<argv[2]<<std::endl;
