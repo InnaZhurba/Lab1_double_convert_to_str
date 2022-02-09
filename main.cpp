@@ -2,6 +2,7 @@
 
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
+#include <boost/lexical_cast.hpp>//до того ж методу що ще не працює
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -9,7 +10,7 @@
 #include <vector>
 #include <chrono>
 #include <atomic>
-//#include <boost/lexical_cast.hpp>//до того ж методу що ще не працює
+
 
 std::string file1, file2;
 long long full_execution_time = 0;
@@ -34,7 +35,9 @@ int method_1(double d){
     // For large numbers, ostringstream automatically
     // converts it to scientific notation
     std::ostringstream num;
-    num.precision(15);//changing default precision to our value
+
+    //якщо це підключити, то к-сть символів у стрінзі буде більша
+    //num.precision(15);//changing default precision to our value
 
     num<<std::fixed<<d; //It has a default precision of six digits
     //num<<std::scientific<<d;
@@ -60,13 +63,15 @@ int method_2(double d){
     auto total_time = finish_time - start_time;
     full_execution_time += to_us(total_time);
 
+    std::cout<< str<<std::endl;
     return (int)str.length();
 }
 //ще не працює, розбираюсь ще з ним
 int method_3(double d){
     auto start_time = get_current_time_fenced();
+
     std::string str;
-    //str = std::lexical_cast<std::string>(d);
+    str = boost::lexical_cast<std::string>(d);
 
     auto finish_time = get_current_time_fenced();
 
@@ -86,7 +91,8 @@ void write_file(int amount, double average){
         exit(4);
     }
 
-    out<<amount<<"\n"<<average<<std::endl;
+    out<<amount<<std::endl;
+    out<<average<<std::endl;
 
     out.close();
 }
