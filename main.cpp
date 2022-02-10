@@ -2,10 +2,9 @@
 
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
-#include <boost/lexical_cast.hpp>//до того ж методу що ще не працює
+#include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <string>
-#include <sstream>
 #include <fstream>
 #include <vector>
 #include <chrono>
@@ -30,55 +29,50 @@ inline long long to_us(const D& d)
 }
 
 int method_1(double d){
-    auto start_time = get_current_time_fenced();
+    //auto start_time = get_current_time_fenced();
     // Including header file sstream is a must.
     // For large numbers, ostringstream automatically
     // converts it to scientific notation
     std::ostringstream num;
 
-    //якщо це підключити, то к-сть символів у стрінзі буде більша
     //num.precision(15);//changing default precision to our value
 
-    num<<std::fixed<<d; //It has a default precision of six digits
-    //num<<std::scientific<<d;
+    num<<std::fixed<<d; //It has a default precision of six digits //num<<std::scientific<<d;
     //num<<d;
     std::string str = num.str();
 
-    auto finish_time = get_current_time_fenced();
-
+    /*auto finish_time = get_current_time_fenced();
     auto total_time = finish_time - start_time;
-    //std::cout<<to_us(total_time)<<std::endl;
     full_execution_time += to_us(total_time);
+     */
 
     return (int)str.length();
 }
 int method_2(double d){
-    auto start_time = get_current_time_fenced();
+    //auto start_time = get_current_time_fenced();
     //It has a default precision of six
     // digits which cannot be changed
     std::string str = std::to_string(d);
 
-    auto finish_time = get_current_time_fenced();
-
+    /*auto finish_time = get_current_time_fenced();
     auto total_time = finish_time - start_time;
     full_execution_time += to_us(total_time);
+    */
 
-    std::cout<< str<<std::endl;
     return (int)str.length();
 }
-//ще не працює, розбираюсь ще з ним
+
 int method_3(double d){
-    auto start_time = get_current_time_fenced();
+    //auto start_time = get_current_time_fenced();
 
     std::string str;
     str = boost::lexical_cast<std::string>(d);
 
-    auto finish_time = get_current_time_fenced();
-
+    /*auto finish_time = get_current_time_fenced();
     auto total_time = finish_time - start_time;
     full_execution_time += to_us(total_time);
+     */
 
-    std::cout<< str<<std::endl;
     return (int)str.length();
 }
 
@@ -94,12 +88,16 @@ void write_file(int amount, double average){
     out<<amount<<std::endl;
     out<<average<<std::endl;
 
+    //std::cout<<"done writing"<<std::endl;
+
     out.close();
 }
 
 void pre_method(int n, const std::vector<double>& data){
     int characters_amount = 0;
     int data_size = (int)data.size();
+
+    auto start_time = get_current_time_fenced();
     switch(n) {
         case 1:
             for (double d : data) {
@@ -120,23 +118,39 @@ void pre_method(int n, const std::vector<double>& data){
             std::cout<<"No such method (pre_method)"<< std::endl;
             exit(3);
     }
+    auto finish_time = get_current_time_fenced();
+    full_execution_time = to_us(finish_time - start_time);
+
     double average = (double)characters_amount/data_size;
     write_file(characters_amount, average);
 }
 
-std::vector<double> read_file(){//(const std::string& file){
+double sciToDub(const std::string& str) {
+
+    std::stringstream ss(str);
+    double d = 0;
+    ss >> d;
+
+    if (ss.fail()) {}
+
+    return (d);
+}
+
+std::vector<double> read_file(){
     std::ifstream in(file1, std::ios::in);
     std::vector<double> data;
-    double d = 0.0;
+    std::string d;
 
     if(!in.is_open()){
         std::cout<<"Error opening file (read_file)"<< std::endl;
+        in.close();
         exit(4);
     }
 
     while(in>>d){
-        data.push_back((double)d);
+        data.push_back(sciToDub(d));
     }
+    in.close();
     return data;
 }
 
